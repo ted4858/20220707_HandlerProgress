@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     public static final long DELAY_MS = 100;
@@ -19,12 +21,13 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
             if (progressBar.getProgress()>0){
                 progressBar.setProgress(progressBar.getProgress()-1);
-            }else{
-                //handler.removeMessages(WHAT_PROGRESS);
+            }
+            handler.sendEmptyMessageDelayed(WHAT_PROGRESS, DELAY_MS);
+            if (progressBar.getProgress()==0){
+                handler.removeMessages(1);
                 Intent intent = new Intent(MainActivity.this, Boom.class);
                 startActivity(intent);
             }
-            handler.sendEmptyMessageDelayed(WHAT_PROGRESS, DELAY_MS);
         }
     };
 
@@ -34,5 +37,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         handler.sendEmptyMessageDelayed(WHAT_PROGRESS, DELAY_MS);
+
+        View view = findViewById(R.id.main_layout);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handler.removeMessages(1);
+                ((TextView)findViewById(R.id.textView)).setText("Stop Boob!!");
+            }
+        });
     }
 }
